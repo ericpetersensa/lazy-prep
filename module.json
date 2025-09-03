@@ -25,5 +25,5 @@
   "packs": [],
   "socket": true,
   "manifest": "https://raw.githubusercontent.com/ericpetersensa/lazy-prep/main/module.json",
-  "download": "https://github.com/ericpetersensa/lazy-prep/archive/main.zip"
+  "download": "https://github.com/ericpetersensa/lazy-prep/archive/refs/heads/main.zip"
 }
