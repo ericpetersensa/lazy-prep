@@ -1,14 +1,15 @@
 <div class="lazy-dm-tabs">
   <nav class="tabs" data-group="primary">
-    <a class="item" data-tab="characters">Characters</a>
-    <a class="item" data-tab="strongStart">Strong Start</a>
-    <a class="item" data-tab="scenes">Scenes</a>
-    <a class="item" data-tab="secrets">Secrets</a>
-    <a class="item" data-tab="locations">Locations</a>
-    <a class="item" data-tab="npcs">NPCs</a>
-    <a class="item" data-tab="threats">Threats</a>
-    <a class="item" data-tab="rewards">Rewards</a>
+    <a class="item" data-tab="characters">{{localize "LAZY_PREP.CHARACTERS"}}</a>
+    <a class="item" data-tab="strongStart">{{localize "LAZY_PREP.STRONG_START"}}</a>
+    <a class="item" data-tab="scenes">{{localize "LAZY_PREP.SCENES"}}</a>
+    <a class="item" data-tab="secrets">{{localize "LAZY_PREP.SECRETS"}}</a>
+    <a class="item" data-tab="locations">{{localize "LAZY_PREP.LOCATIONS"}}</a>
+    <a class="item" data-tab="npcs">{{localize "LAZY_PREP.NPCS"}}</a>
+    <a class="item" data-tab="threats">{{localize "LAZY_PREP.THREATS"}}</a>
+    <a class="item" data-tab="rewards">{{localize "LAZY_PREP.REWARDS"}}</a>
   </nav>
+
   <section class="content">
     {{> characters}}
     {{> strongStart}}
@@ -20,4 +21,5 @@
     {{> rewards}}
   </section>
 </div>
-<button class="save-session">Save Session</button>
+
+<button class="save-session">{{localize "LAZY_PREP.SAVE"}}</button>
