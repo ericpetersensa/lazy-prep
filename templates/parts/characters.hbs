@@ -1,0 +1,13 @@
+<div class="tab" data-tab="characters">
+  <h2>{{localize "LAZY_PREP.CHARACTERS"}}</h2>
+  <ul>
+    {{#each session.characters}}
+      <li>
+        <input type="text" name="char-name-{{id}}" value="{{name}}" placeholder="Character Name"/>
+        <input type="number" name="char-spotlight-{{id}}" value="{{spotlightDebt}}" min="0" style="width:50px;"/>
+        <input type="text" name="char-notes-{{id}}" value="{{notes}}" placeholder="Notes"/>
+      </li>
+    {{/each}}
+  </ul>
+  <button class="add-character">{{localize "LAZY_PREP.ADD"}} Character</button>
+</div>
