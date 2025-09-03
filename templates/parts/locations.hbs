@@ -1,0 +1,12 @@
+<div class="tab" data-tab="locations">
+  <h2>{{localize "LAZY_PREP.LOCATIONS"}}</h2>
+  <ul>
+    {{#each session.locations}}
+      <li>
+        <input type="text" name="loc-name-{{id}}" value="{{name}}" placeholder="Location Name"/>
+        <input type="text" name="loc-detail-{{id}}" value="{{detail}}" placeholder="Evocative Detail"/>
+      </li>
+    {{/each}}
+  </ul>
+  <button class="add-location">{{localize "LAZY_PREP.ADD"}} Location</button>
+</div>
