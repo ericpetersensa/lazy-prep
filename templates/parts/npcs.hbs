@@ -1,0 +1,12 @@
+<div class="tab" data-tab="npcs">
+  <h2>{{localize "LAZY_PREP.NPCS"}}</h2>
+  <ul>
+    {{#each session.npcs}}
+      <li>
+        <input type="text" name="npc-name-{{id}}" value="{{name}}" placeholder="NPC Name"/>
+        <input type="text" name="npc-motive-{{id}}" value="{{motive}}" placeholder="Motive"/>
+      </li>
+    {{/each}}
+  </ul>
+  <button class="add-npc">{{localize "LAZY_PREP.ADD"}} NPC</button>
+</div>
