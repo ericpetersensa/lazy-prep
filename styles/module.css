@@ -1,0 +1,10 @@
+.lazy-dm-prep .tab {
+  padding: 10px;
+}
+.lazy-dm-prep input[type="text"] {
+  width: 80%;
+  margin-bottom: 5px;
+}
+.lazy-dm-prep button {
+  margin-top: 10px;
+}
