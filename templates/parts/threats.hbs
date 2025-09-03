@@ -1,0 +1,11 @@
+<div class="tab" data-tab="threats">
+  <h2>{{localize "LAZY_PREP.THREATS"}}</h2>
+  <ul>
+    {{#each session.threats}}
+      <li>
+        <input type="text" name="threat-name-{{id}}" value="{{name}}" placeholder="Threat Name"/>
+      </li>
+    {{/each}}
+  </ul>
+  <button class="add-threat">{{localize "LAZY_PREP.ADD"}} Threat</button>
+</div>
