@@ -1,0 +1,13 @@
+<div class="tab" data-tab="scenes">
+  <h2>{{localize "LAZY_PREP.SCENES"}}</h2>
+  <ul>
+    {{#each session.scenes}}
+      <li>
+        <input type="text" name="scene-name-{{id}}" value="{{name}}" placeholder="Scene Name"/>
+        <input type="text" name="scene-goal-{{id}}" value="{{goal}}" placeholder="Goal"/>
+        <input type="text" name="scene-twist-{{id}}" value="{{twist}}" placeholder="Twist"/>
+      </li>
+    {{/each}}
+  </ul>
+  <button class="add-scene">{{localize "LAZY_PREP.ADD"}} Scene</button>
+</div>
