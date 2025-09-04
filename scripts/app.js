@@ -22,8 +22,8 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
     id: "lazy-dm-prep",
     title: game.i18n?.localize("LAZY_PREP.APP_TITLE") ?? "Lazy DM Prep Dashboard",
     template: "modules/lazy-prep/templates/app.hbs",
-    width: 900,
-    height: 640,
+    // ApplicationV2 (v13) uses "position" for sizing and placement
+    position: { width: 900, height: 640 },
     resizable: true,
     classes: ["lazy-dm-prep", "sheet"],
     // We declare the parts here for reference; actual injection is done after main render.
@@ -45,10 +45,8 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
   constructor(options = {}) {
     super(options);
     this._session = null;
-    // Provide a global randomID if not present (some older snippets expect it)
-    if (typeof globalThis.randomID !== "function") {
-      globalThis.randomID = foundry.utils.randomID;
-    }
+    // NOTE: Do NOT touch globalThis.randomID in v13 (deprecated).
+    // All IDs should be created with foundry.utils.randomID() in part scripts.
   }
 
   /**
@@ -109,7 +107,7 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * After the top-level template is rendered, optionally inject part templates.
    * This supports two approaches:
-   *  1) If your app.hbs already includes the parts (e.g., via includes), we won't inject.
+   *  1) If your app.hbs already includes the parts (via {{> partial}}), we won't inject.
    *  2) If not, we render parts and append them to the `.content` container.
    */
   async _renderInner(data) {
@@ -127,7 +125,7 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
     // Render each part template with shared context (the same data used in getData()).
     for (const [partId, partCfg] of Object.entries(this.constructor.DEFAULT_OPTIONS.parts)) {
       const context = { session: this._session, i18n: game.i18n };
-      const partHTML = await renderTemplate(partCfg.template, context);
+      const partHTML = await foundry.applications.handlebars.renderTemplate(partCfg.template, context);
       const wrapper = document.createElement("div");
       wrapper.innerHTML = partHTML.trim();
 
@@ -154,7 +152,8 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
   activateListeners(htmlElement) {
     super.activateListeners(htmlElement);
 
-    const html = $(htmlElement); // jQuery wrapper for convenience
+    // In v13, htmlElement is a DOM Element. jQuery is still available if desired:
+    const html = $(htmlElement); // convenience wrapper
 
     // Tabs
     this._activateTabs(htmlElement);
