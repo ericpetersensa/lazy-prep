@@ -1,24 +1,32 @@
+/* Potential Scenes tab logic (v13-ready) */
 export function activateScenesListeners(html, app) {
-  html.find(".add-scene").click(() => {
-    app.session.scenes.push({ id: randomID(), name: "", goal: "", twist: "" });
+  // Add scene row
+  html.on("click", ".add-scene", () => {
+    app.session.scenes.push({
+      id: foundry.utils.randomID(),
+      name: "",
+      goal: "",
+      twist: ""
+    });
     app.render();
   });
 
-  html.find("input[name^='scene-name']").change(ev => {
+  // Edit fields
+  html.on("change", "input[name^='scene-name-']", (ev) => {
     const id = ev.currentTarget.name.split("-")[2];
-    const scene = app.session.scenes.find(s => s.id === id);
-    if (scene) scene.name = ev.currentTarget.value;
+    const s = app.session.scenes.find(x => x.id === id);
+    if (s) s.name = ev.currentTarget.value ?? "";
   });
 
-  html.find("input[name^='scene-goal']").change(ev => {
+  html.on("change", "input[name^='scene-goal-']", (ev) => {
     const id = ev.currentTarget.name.split("-")[2];
-    const scene = app.session.scenes.find(s => s.id === id);
-    if (scene) scene.goal = ev.currentTarget.value;
+    const s = app.session.scenes.find(x => x.id === id);
+    if (s) s.goal = ev.currentTarget.value ?? "";
   });
 
-  html.find("input[name^='scene-twist']").change(ev => {
+  html.on("change", "input[name^='scene-twist-']", (ev) => {
     const id = ev.currentTarget.name.split("-")[2];
-    const scene = app.session.scenes.find(s => s.id === id);
-    if (scene) scene.twist = ev.currentTarget.value;
+    const s = app.session.scenes.find(x => x.id === id);
+    if (s) s.twist = ev.currentTarget.value ?? "";
   });
 }
