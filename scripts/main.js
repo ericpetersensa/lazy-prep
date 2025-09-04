@@ -1,26 +1,25 @@
 import { LazyDMPrepApp } from "./app.js";
 
-/** Preload + register Handlebars partials used by app.hbs */
+/** Precompile + register Handlebars partials (v13 namespaced API) */
 async function registerPartials() {
+  const hbs = foundry.applications.handlebars;
   const parts = [
     "characters", "strongStart", "scenes", "secrets",
     "locations", "npcs", "threats", "rewards"
   ];
   const base = "modules/lazy-prep/templates/parts";
 
-  // Preload all part templates (compiles & caches)
-  await loadTemplates(parts.map(p => `${base}/${p}.hbs`));
-
-  // Register each as a partial for use by {{> partName}}
+  // Compile & cache each template, then register as partial
   for (const p of parts) {
     const path = `${base}/${p}.hbs`;
-    const compiled = await getTemplate(path); // compiled template fn
+    const compiled = await hbs.getTemplate(path); // v13 namespaced
     Handlebars.registerPartial(p, compiled);
+    console.info(`Lazy Prep | Registered partial: ${p}`);
   }
 }
 
 Hooks.once("init", async () => {
-  console.log("Lazy Prep | Initializing module");
+  console.log("Lazy Prep | Initializing module (v13 AppV2)");
 
   // World setting for persistent session data
   game.settings.register("lazy-prep", "currentSession", {
@@ -30,16 +29,20 @@ Hooks.once("init", async () => {
     default: {}
   });
 
-  // Register partials; if it fails, log but keep module alive
+  // Register partials (log but don't die on failure)
   try {
     await registerPartials();
   } catch (err) {
-    console.warn("Lazy Prep | Failed to register partial templates. Check paths under templates/parts/.", err);
+    console.warn(
+      "Lazy Prep | Failed to register partial templates. app.hbs includes may be empty; " +
+      "app.js will try dynamic injection as a fallback.",
+      err
+    );
   }
 });
 
 Hooks.once("ready", async () => {
-  // Global API
+  // Expose a global API for macros/other modules
   game.lazyPrep = {
     app: null,
     open: () => {
@@ -48,20 +51,19 @@ Hooks.once("ready", async () => {
     }
   };
 
-  // Dedicated Scene Controls group (dragon icon)
+  // 1) Dedicated Scene Controls group (dragon icon)
   Hooks.on("getSceneControlButtons", (controls) => {
-    if (!controls.some(c => c.name === "lazy-prep")) {
+    const exists = controls.some(c => c.name === "lazy-prep");
+    if (!exists) {
       controls.push({
         name: "lazy-prep",
         title: game.i18n?.localize("LAZY_PREP.APP_TITLE") || "Lazy DM Prep",
         icon: "fas fa-dragon",
-        visible: true, // change to game.user.isGM if you want GM-only
+        visible: true, // change to game.user.isGM for GM-only
         tools: [
           {
             name: "open-dashboard",
-            title: game.i18n?.has("LAZY_PREP.OPEN")
-              ? game.i18n.localize("LAZY_PREP.OPEN")
-              : "Open Lazy DM Prep",
+            title: game.i18n?.has("LAZY_PREP.OPEN") ? game.i18n.localize("LAZY_PREP.OPEN") : "Open Lazy DM Prep",
             icon: "fas fa-book-open",
             button: true,
             onClick: () => game.lazyPrep.open()
@@ -69,9 +71,24 @@ Hooks.once("ready", async () => {
         ]
       });
     }
+
+    // 2) Safety net: also add a tool under Token controls
+    const tokenControls = controls.find(c => c.name === "token");
+    if (tokenControls && !tokenControls.tools.some(t => t.name === "lazy-prep-open")) {
+      tokenControls.tools.push({
+        name: "lazy-prep-open",
+        title: game.i18n?.localize("LAZY_PREP.APP_TITLE") || "Lazy DM Prep",
+        icon: "fas fa-dragon",
+        button: true,
+        onClick: () => game.lazyPrep.open()
+      });
+    }
   });
 
-  // Optional: auto-create macro for GMs and assign to first empty hotbar slot
+  // Force a controls refresh so buttons appear immediately
+  ui.controls?.render(true);
+
+  // Optional QoL: create a macro for GMs and assign to first free slot
   if (game.user.isGM) {
     const macroName = "Open Lazy DM Prep";
     let macro = game.macros?.getName?.(macroName);
