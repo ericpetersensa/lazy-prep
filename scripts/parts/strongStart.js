@@ -1,12 +1,16 @@
+/* Strong Start tab logic (v13-ready) */
 export function activateStrongStartListeners(html, app) {
-  html.find("textarea[name='strong-start-text']").change(ev => {
-    app.session.strongStart.text = ev.currentTarget.value;
+  // Update text
+  html.on("change", "textarea[name='strong-start-text']", (ev) => {
+    app.session.strongStart.text = ev.currentTarget.value ?? "";
   });
 
-  html.find(".create-strong-start-scene").click(async () => {
-    const scene = await Scene.create({ name: "Strong Start", active: false });
-    app.session.strongStart.sceneId = scene.id;
-    ui.notifications.info("Strong Start Scene created!");
+  // Create a stub Scene for Strong Start
+  html.on("click", ".create-strong-start-scene", async () => {
+    const sceneName = "Strong Start";
+    const scene = await Scene.create({ name: sceneName, active: false });
+    app.session.strongStart.sceneId = scene?.id ?? null;
+    ui.notifications?.info(`Created scene: ${sceneName}`);
     app.render();
   });
 }
