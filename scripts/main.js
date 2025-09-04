@@ -20,7 +20,7 @@ async function registerPartials() {
 }
 
 Hooks.once("init", async () => {
-  console.log("Lazy Prep | Initializing module (v13 AppV2)");
+  console.info("Lazy Prep | Initializing module (v13 AppV2)");
 
   // Persistent session store
   game.settings.register("lazy-prep", "currentSession", {
@@ -40,47 +40,62 @@ Hooks.once("init", async () => {
 });
 
 /**
- * Register Scene Controls hook at top level so it always exists
- * (not gated by 'ready'). We add both:
- *  - a dedicated 'Lazy DM Prep' group (dragon header),
- *  - and a tool under Token controls (safety net).
+ * v13: controls is Record<string, SceneControl>, not an Array.
+ * We add:
+ *  - a dedicated 'lazy-prep' group (dragon header),
+ *  - and a tool under the Token group as a safety net.
  */
 Hooks.on("getSceneControlButtons", (controls) => {
-  console.info("Lazy Prep | getSceneControlButtons fired.");
+  try {
+    console.info("Lazy Prep | getSceneControlButtons fired. Keys:", Object.keys(controls));
 
-  // Dedicated group (dragon header)
-  if (!controls.some(c => c.name === "lazy-prep")) {
-    controls.push({
-      name: "lazy-prep",
-      title: game.i18n?.localize("LAZY_PREP.APP_TITLE") || "Lazy DM Prep",
-      icon: "fas fa-dragon",
-      visible: true, // change to game.user.isGM for GM-only
-      tools: [
-        {
-          name: "open-dashboard",
-          title: game.i18n?.has("LAZY_PREP.OPEN")
-            ? game.i18n.localize("LAZY_PREP.OPEN")
-            : "Open Lazy DM Prep",
-          icon: "fas fa-book-open",
+    // --- Dedicated 'lazy-prep' group (dragon header) ---
+    if (!controls["lazy-prep"]) {
+      controls["lazy-prep"] = {
+        name: "lazy-prep",
+        title: game.i18n?.localize("LAZY_PREP.APP_TITLE") || "Lazy DM Prep",
+        icon: "fas fa-dragon",
+        visible: true,
+        tools: []
+      };
+      console.info("Lazy Prep | Added dedicated 'lazy-prep' group.");
+    }
+
+    const lazyGroup = controls["lazy-prep"];
+    if (!lazyGroup.tools) lazyGroup.tools = [];
+
+    if (!lazyGroup.tools.find(t => t.name === "open-dashboard")) {
+      lazyGroup.tools.push({
+        name: "open-dashboard",
+        title: game.i18n?.has("LAZY_PREP.OPEN")
+          ? game.i18n.localize("LAZY_PREP.OPEN")
+          : "Open Lazy DM Prep",
+        icon: "fas fa-book-open",
+        button: true,
+        onClick: () => game.lazyPrep?.open?.()
+      });
+      console.info("Lazy Prep | Added 'Open' tool to 'lazy-prep' group.");
+    }
+
+    // --- Safety net: also add a tool under Token controls ---
+    const token = controls["token"];
+    if (token) {
+      token.tools ??= [];
+      if (!token.tools.find(t => t.name === "lazy-prep-open")) {
+        token.tools.push({
+          name: "lazy-prep-open",
+          title: game.i18n?.localize("LAZY_PREP.APP_TITLE") || "Lazy DM Prep",
+          icon: "fas fa-dragon",
           button: true,
           onClick: () => game.lazyPrep?.open?.()
-        }
-      ]
-    });
-    console.info("Lazy Prep | Added dedicated Scene Controls group.");
-  }
-
-  // Safety net under Token controls
-  const tokenControls = controls.find(c => c.name === "token");
-  if (tokenControls && !tokenControls.tools.some(t => t.name === "lazy-prep-open")) {
-    tokenControls.tools.push({
-      name: "lazy-prep-open",
-      title: game.i18n?.localize("LAZY_PREP.APP_TITLE") || "Lazy DM Prep",
-      icon: "fas fa-dragon",
-      button: true,
-      onClick: () => game.lazyPrep?.open?.()
-    });
-    console.info("Lazy Prep | Added Token tool button.");
+        });
+        console.info("Lazy Prep | Added Token-layer 'Open' tool.");
+      }
+    } else {
+      console.warn("Lazy Prep | Token controls not found; custom tool will only appear in dedicated group.");
+    }
+  } catch (e) {
+    console.error("Lazy Prep | Error in getSceneControlButtons:", e);
   }
 });
 
@@ -94,7 +109,7 @@ Hooks.once("ready", async () => {
     }
   };
 
-  // Force controls refresh once the canvas is ready
+  // Force controls refresh once the canvas is ready (ensures buttons appear)
   Hooks.once("canvasReady", () => {
     console.info("Lazy Prep | canvasReady → forcing controls render.");
     ui.controls?.render(true);
