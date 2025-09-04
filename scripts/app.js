@@ -80,6 +80,7 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // If app.hbs partials didn't render, inject parts dynamically as a fallback.
     let tabs = html.querySelectorAll(".tab[data-tab]");
+    console.info(`Lazy Prep | _renderInner: found ${tabs.length} tab(s) before fallback.`);
     if (!tabs || tabs.length === 0) {
       const content = html.querySelector("section.content");
       if (content) {
@@ -87,11 +88,10 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
           const partHTML = await HBS.renderTemplate(partCfg.template, { session: this._session, i18n: game.i18n });
           const wrapper = document.createElement("div");
           wrapper.innerHTML = partHTML.trim();
-          const tab = wrapper.querySelector(".tab[data-tab]");
 
+          const tab = wrapper.querySelector(".tab[data-tab]");
           if (tab) content.appendChild(tab);
           else {
-            // If a template ever lacks the .tab wrapper, wrap it.
             const tabDiv = document.createElement("div");
             tabDiv.classList.add("tab");
             tabDiv.dataset.tab = partId;
@@ -113,6 +113,7 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
     // Tabs
     const nav = htmlElement.querySelector("nav.tabs[data-group='primary']");
     const tabs = Array.from(htmlElement.querySelectorAll(".tab[data-tab]"));
+    console.info(`Lazy Prep | activateListeners: tabs present = ${tabs.length}.`);
     if (nav && tabs.length) {
       const initial = nav.querySelector("a.item[data-tab]")?.dataset?.tab ?? tabs[0].dataset.tab;
       this._showTab(htmlElement, initial);
@@ -139,6 +140,8 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
     activateNPCsListeners($html, this);
     activateThreatsListeners($html, this);
     activateRewardsListeners($html, this);
+
+    console.info("Lazy Prep | activateListeners complete.");
   }
 
   _showTab(rootEl, tabName) {
