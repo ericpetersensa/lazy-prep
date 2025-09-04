@@ -1,18 +1,25 @@
+/* NPCs tab logic (v13-ready) */
 export function activateNPCsListeners(html, app) {
-  html.find(".add-npc").click(() => {
-    app.session.npcs.push({ id: randomID(), name: "", motive: "" });
+  // Add NPC
+  html.on("click", ".add-npc", () => {
+    app.session.npcs.push({
+      id: foundry.utils.randomID(),
+      name: "",
+      motive: ""
+    });
     app.render();
   });
 
-  html.find("input[name^='npc-name']").change(ev => {
+  // Edit fields
+  html.on("change", "input[name^='npc-name-']", (ev) => {
     const id = ev.currentTarget.name.split("-")[2];
-    const npc = app.session.npcs.find(n => n.id === id);
-    if (npc) npc.name = ev.currentTarget.value;
+    const n = app.session.npcs.find(x => x.id === id);
+    if (n) n.name = ev.currentTarget.value ?? "";
   });
 
-  html.find("input[name^='npc-motive']").change(ev => {
+  html.on("change", "input[name^='npc-motive-']", (ev) => {
     const id = ev.currentTarget.name.split("-")[2];
-    const npc = app.session.npcs.find(n => n.id === id);
-    if (npc) npc.motive = ev.currentTarget.value;
+    const n = app.session.npcs.find(x => x.id === id);
+    if (n) n.motive = ev.currentTarget.value ?? "";
   });
 }
