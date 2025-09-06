@@ -1,18 +1,29 @@
-/* Rewards tab logic (v13-ready) */
-export function activateRewardsListeners(html, app) {
-  // Add reward
-  html.on("click", ".add-reward", () => {
-    app.session.rewards.push({
-      id: foundry.utils.randomID(),
-      name: ""
+/* Rewards tab logic (v13-ready, native DOM) */
+export function activateRewardsListeners(htmlElement, app) {
+  htmlElement.querySelectorAll(".add-reward").forEach(btn => {
+    btn.addEventListener("click", () => {
+      app.session.rewards.push({
+        id: foundry.utils.randomID(),
+        name: "",
+        notes: ""
+      });
+      app.render();
     });
-    app.render();
   });
 
-  // Edit fields
-  html.on("change", "input[name^='reward-name-']", (ev) => {
-    const id = ev.currentTarget.name.split("-")[2];
-    const r = app.session.rewards.find(x => x.id === id);
-    if (r) r.name = ev.currentTarget.value ?? "";
+  htmlElement.querySelectorAll("input[name^='reward-name-']").forEach(input => {
+    input.addEventListener("change", ev => {
+      const id = ev.currentTarget.name.split("-")[2];
+      const r = app.session.rewards.find(x => x.id === id);
+      if (r) r.name = ev.currentTarget.value ?? "";
+    });
+  });
+
+  htmlElement.querySelectorAll("input[name^='reward-notes-']").forEach(input => {
+    input.addEventListener("change", ev => {
+      const id = ev.currentTarget.name.split("-")[2];
+      const r = app.session.rewards.find(x => x.id === id);
+      if (r) r.notes = ev.currentTarget.value ?? "";
+    });
   });
 }
