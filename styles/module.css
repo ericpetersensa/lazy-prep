@@ -1,7 +1,8 @@
-.lazy-dm-prep .tabs { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
-.lazy-dm-prep .tabs .item.active { font-weight: 700; text-decoration: underline; }
-.lazy-dm-prep .content { padding: 0.5rem 0; }
-.lazy-dm-prep ul { list-style: none; padding-left: 0; }
-.lazy-dm-prep li { display: grid; grid-template-columns: 1fr 140px 1.5fr; gap: 0.5rem; margin-bottom: 0.5rem; }
-.lazy-dm-prep label { display: flex; flex-direction: column; }
-.lazy-dm-prep button { margin-top: 0.5rem; }
+/* Scope everything to this one window */
+.window-app.lazy-dm-prep .tabs { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+.window-app.lazy-dm-prep .tabs .item.active { font-weight: 700; text-decoration: underline; }
+.window-app.lazy-dm-prep .content { padding: 0.5rem 0; }
+.window-app.lazy-dm-prep ul { list-style: none; padding-left: 0; }
+.window-app.lazy-dm-prep li { display: grid; grid-template-columns: 1fr 140px 1.5fr; gap: 0.5rem; margin-bottom: 0.5rem; }
+.window-app.lazy-dm-prep label { display: flex; flex-direction: column; }
+.window-app.lazy-dm-prep button { margin-top: 0.5rem; }
