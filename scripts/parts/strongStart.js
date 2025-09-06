@@ -1,16 +1,14 @@
-/* Strong Start tab logic (v13-ready) */
-export function activateStrongStartListeners(html, app) {
-  // Update text
-  html.on("change", "textarea[name='strong-start-text']", (ev) => {
-    app.session.strongStart.text = ev.currentTarget.value ?? "";
+/* Strong Start tab logic (v13-ready, native DOM) */
+export function activateStrongStartListeners(htmlElement, app) {
+  htmlElement.querySelectorAll("input[name='strongStart-text']").forEach(input => {
+    input.addEventListener("change", ev => {
+      app.session.strongStart.text = ev.currentTarget.value ?? "";
+    });
   });
 
-  // Create a stub Scene for Strong Start
-  html.on("click", ".create-strong-start-scene", async () => {
-    const sceneName = "Strong Start";
-    const scene = await Scene.create({ name: sceneName, active: false });
-    app.session.strongStart.sceneId = scene?.id ?? null;
-    ui.notifications?.info(`Created scene: ${sceneName}`);
-    app.render();
+  htmlElement.querySelectorAll("input[name='strongStart-sceneId']").forEach(input => {
+    input.addEventListener("change", ev => {
+      app.session.strongStart.sceneId = ev.currentTarget.value ?? null;
+    });
   });
 }
