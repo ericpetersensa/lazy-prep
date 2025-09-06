@@ -9,7 +9,6 @@ export function activateSecretsListeners(htmlElement, app) {
       app.render();
     });
   });
-
   htmlElement.querySelectorAll("input[name^='secret-text-']").forEach(input => {
     input.addEventListener("change", ev => {
       const id = ev.currentTarget.name.split("-")[2];
