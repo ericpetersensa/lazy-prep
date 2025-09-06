@@ -76,13 +76,22 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
   async _renderInner(data) {
     const html = await super._renderInner(data);
 
+    // Build a content section if the main template failed to produce one.
+    let content = html.querySelector("section.content");
+    if (!content) {
+      const section = document.createElement("section");
+      section.classList.add("content");
+      html.appendChild(section);
+      content = section;
+      console.warn("Lazy Prep \n app.hbs produced no <section class='content'>; created one for fallback injection.");
+    }
+
     // If app.hbs partials didn't render, inject parts dynamically as a fallback.
     let tabs = html.querySelectorAll(".tab[data-tab]");
     console.info(`Lazy Prep \n _renderInner: found ${tabs.length} tab(s) before fallback.`);
     if (!tabs || tabs.length === 0) {
-      const content = html.querySelector("section.content");
-      if (content) {
-        for (const [partId, partCfg] of Object.entries(this.constructor.DEFAULT_OPTIONS.parts)) {
+      for (const [partId, partCfg] of Object.entries(this.constructor.DEFAULT_OPTIONS.parts)) {
+        try {
           const partHTML = await HBS.renderTemplate(partCfg.template, { session: this._session, i18n: game.i18n });
           const wrapper = document.createElement("div");
           wrapper.innerHTML = partHTML.trim();
@@ -95,8 +104,11 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
             tabDiv.append(...wrapper.childNodes);
             content.appendChild(tabDiv);
           }
+        } catch (e) {
+          console.error(`Lazy Prep \n Failed to render part '${partId}' from ${partCfg.template}:`, e);
         }
       }
+
       tabs = html.querySelectorAll(".tab[data-tab]");
       console.info(`Lazy Prep \n Fallback injected ${tabs.length} tab(s).`);
     }
