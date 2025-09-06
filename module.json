@@ -2,7 +2,7 @@
   "id": "lazy-prep",
   "title": "Return of the Lazy Dungeon Master",
   "description": "Implements the 8 Lazy DM steps for fast, integrated session prep inspired by Michael E. Shea.",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "compatibility": {
     "minimum": "13",
     "verified": "13.347"
