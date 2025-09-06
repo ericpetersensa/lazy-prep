@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-// Foundry VTT v13 - ApplicationV2 + Handlebars mixin (pure parts; no fallback injection)
 import { activateCharactersListeners } from "./parts/characters.js";
 import { activateStrongStartListeners } from "./parts/strongStart.js";
 import { activateScenesListeners } from "./parts/scenes.js";
@@ -12,23 +11,24 @@ import { activateRewardsListeners } from "./parts/rewards.js";
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
-  static DEFAULT_OPTIONS = {
+  static DEFAULT_OPTIONS = foundry.utils.mergeObject(super.DEFAULT_OPTIONS, {
     id: "lazy-dm-prep",
     template: "modules/lazy-prep/templates/app.hbs",
     position: { width: 900, height: 640 },
     window: { title: "LAZY_PREP.APP_TITLE", resizable: true },
-    classes: ["lazy-dm-prep", "sheet"],
-    // Each part renders into a <... data-part="..."> slot in app.hbs
-    parts: {
-      characters:  { template: "modules/lazy-prep/templates/parts/characters.hbs" },
-      strongStart: { template: "modules/lazy-prep/templates/parts/strongStart.hbs" },
-      scenes:      { template: "modules/lazy-prep/templates/parts/scenes.hbs" },
-      secrets:     { template: "modules/lazy-prep/templates/parts/secrets.hbs" },
-      locations:   { template: "modules/lazy-prep/templates/parts/locations.hbs" },
-      npcs:        { template: "modules/lazy-prep/templates/parts/npcs.hbs" },
-      threats:     { template: "modules/lazy-prep/templates/parts/threats.hbs" },
-      rewards:     { template: "modules/lazy-prep/templates/parts/rewards.hbs" }
-    }
+    classes: ["lazy-dm-prep", "sheet"]
+  });
+
+  // ⬇️ AppV2 + Handlebars mixin: declare parts here (not in DEFAULT_OPTIONS)
+  static PARTS = {
+    characters:  { template: "modules/lazy-prep/templates/parts/characters.hbs" },
+    strongStart: { template: "modules/lazy-prep/templates/parts/strongStart.hbs" },
+    scenes:      { template: "modules/lazy-prep/templates/parts/scenes.hbs" },
+    secrets:     { template: "modules/lazy-prep/templates/parts/secrets.hbs" },
+    locations:   { template: "modules/lazy-prep/templates/parts/locations.hbs" },
+    npcs:        { template: "modules/lazy-prep/templates/parts/npcs.hbs" },
+    threats:     { template: "modules/lazy-prep/templates/parts/threats.hbs" },
+    rewards:     { template: "modules/lazy-prep/templates/parts/rewards.hbs" }
   };
 
   constructor(options = {}) {
@@ -36,7 +36,6 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._session = null;
   }
 
-  /** AppV2: build the handlebars context here. */
   async _prepareContext(_options) {
     const session = await this.loadSession();
     return { session, i18n: game.i18n };
@@ -71,7 +70,6 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
     ui.notifications?.info(game.i18n?.localize("LAZY_PREP.SAVE") ?? "Session saved.");
   }
 
-  /** Standard DOM wiring; no rendering/injection fallback needed. */
   activateListeners(htmlElement) {
     super.activateListeners(htmlElement);
 
