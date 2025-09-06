@@ -10,7 +10,6 @@ export function activateRewardsListeners(htmlElement, app) {
       app.render();
     });
   });
-
   htmlElement.querySelectorAll("input[name^='reward-name-']").forEach(input => {
     input.addEventListener("change", ev => {
       const id = ev.currentTarget.name.split("-")[2];
@@ -18,7 +17,6 @@ export function activateRewardsListeners(htmlElement, app) {
       if (r) r.name = ev.currentTarget.value ?? "";
     });
   });
-
   htmlElement.querySelectorAll("input[name^='reward-notes-']").forEach(input => {
     input.addEventListener("change", ev => {
       const id = ev.currentTarget.name.split("-")[2];
