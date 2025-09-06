@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+// Foundry VTT v13 - ApplicationV2 + Handlebars mixin (parts-based)
 import { activateCharactersListeners } from "./parts/characters.js";
 import { activateStrongStartListeners } from "./parts/strongStart.js";
 import { activateScenesListeners } from "./parts/scenes.js";
@@ -19,7 +20,7 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
     classes: ["lazy-dm-prep", "sheet"]
   });
 
-  // ⬇️ AppV2 + Handlebars mixin: declare parts here (not in DEFAULT_OPTIONS)
+  // ✅ AppV2 + Handlebars: declare parts here
   static PARTS = {
     characters:  { template: "modules/lazy-prep/templates/parts/characters.hbs" },
     strongStart: { template: "modules/lazy-prep/templates/parts/strongStart.hbs" },
@@ -36,6 +37,7 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._session = null;
   }
 
+  /** Build the handlebars context. */
   async _prepareContext(_options) {
     const session = await this.loadSession();
     return { session, i18n: game.i18n };
@@ -70,6 +72,7 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
     ui.notifications?.info(game.i18n?.localize("LAZY_PREP.SAVE") ?? "Session saved.");
   }
 
+  /** Standard DOM wiring; AppV2 calls this after render. */
   activateListeners(htmlElement) {
     super.activateListeners(htmlElement);
 
