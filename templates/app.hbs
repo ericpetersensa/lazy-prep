@@ -11,14 +11,15 @@
   </nav>
 
   <section class="content">
-    {{> characters}}
-    {{> strongStart}}
-    {{> scenes}}
-    {{> secrets}}
-    {{> locations}}
-    {{> npcs}}
-    {{> threats}}
-    {{> rewards}}
+    <!-- Each DIV is a tab + a render target for a part -->
+    <div class="tab" data-tab="characters"  data-part="characters"></div>
+    <div class="tab" data-tab="strongStart" data-part="strongStart"></div>
+    <div class="tab" data-tab="scenes"      data-part="scenes"></div>
+    <div class="tab" data-tab="secrets"     data-part="secrets"></div>
+    <div class="tab" data-tab="locations"   data-part="locations"></div>
+    <div class="tab" data-tab="npcs"        data-part="npcs"></div>
+    <div class="tab" data-tab="threats"     data-part="threats"></div>
+    <div class="tab" data-tab="rewards"     data-part="rewards"></div>
   </section>
 </div>
 
