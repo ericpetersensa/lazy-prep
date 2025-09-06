@@ -1,11 +1,24 @@
-<div class="tab" data-tab="rewards">
-  <h2>{{localize "LAZY_PREP.REWARDS"}}</h2>
-  <ul>
-    {{#each session.rewards}}
-      <li>
-        <input type="text" name="reward-name-{{id}}" value="{{name}}" placeholder="Reward Name"/>
-      </li>
-    {{/each}}
-  </ul>
-  <button class="add-reward">{{localize "LAZY_PREP.ADD"}} Reward</button>
-</div>
+<h2>{{localize "LAZY_PREP.REWARDS"}}</h2>
+
+<ul class="lazy-rewards">
+  {{#each session.rewards}}
+    <li class="reward-row" data-id="{{id}}">
+      <label>
+        {{localize "LAZY_PREP.NAME"}}
+        <input type="text" name="reward-name-{{id}}" value="{{name}}" placeholder="{{localize 'LAZY_PREP.NAME'}}"/>
+      </label>
+
+      <label>
+        {{localize "LAZY_PREP.TYPE"}}
+        <input type="text" name="reward-type-{{id}}" value="{{type}}" placeholder="{{localize 'LAZY_PREP.TYPE'}}"/>
+      </label>
+
+      <label class="notes">
+        {{localize "LAZY_PREP.DETAILS"}}
+        <input type="text" name="reward-notes-{{id}}" value="{{notes}}" placeholder="{{localize 'LAZY_PREP.DETAILS'}}"/>
+      </label>
+    </li>
+  {{/each}}
+</ul>
+
+<button class="add-reward">{{localize "LAZY_PREP.ADD"}} {{localize "LAZY_PREP.REWARD"}}</button>
