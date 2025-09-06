@@ -10,7 +10,6 @@ export function activateThreatsListeners(htmlElement, app) {
       app.render();
     });
   });
-
   htmlElement.querySelectorAll("input[name^='threat-name-']").forEach(input => {
     input.addEventListener("change", ev => {
       const id = ev.currentTarget.name.split("-")[2];
@@ -18,7 +17,6 @@ export function activateThreatsListeners(htmlElement, app) {
       if (t) t.name = ev.currentTarget.value ?? "";
     });
   });
-
   htmlElement.querySelectorAll("input[name^='threat-notes-']").forEach(input => {
     input.addEventListener("change", ev => {
       const id = ev.currentTarget.name.split("-")[2];
