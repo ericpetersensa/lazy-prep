@@ -11,7 +11,6 @@ export function activateNPCsListeners(htmlElement, app) {
       app.render();
     });
   });
-
   htmlElement.querySelectorAll("input[name^='npc-name-']").forEach(input => {
     input.addEventListener("change", ev => {
       const id = ev.currentTarget.name.split("-")[2];
@@ -19,7 +18,6 @@ export function activateNPCsListeners(htmlElement, app) {
       if (n) n.name = ev.currentTarget.value ?? "";
     });
   });
-
   htmlElement.querySelectorAll("input[name^='npc-role-']").forEach(input => {
     input.addEventListener("change", ev => {
       const id = ev.currentTarget.name.split("-")[2];
@@ -27,7 +25,6 @@ export function activateNPCsListeners(htmlElement, app) {
       if (n) n.role = ev.currentTarget.value ?? "";
     });
   });
-
   htmlElement.querySelectorAll("input[name^='npc-notes-']").forEach(input => {
     input.addEventListener("change", ev => {
       const id = ev.currentTarget.name.split("-")[2];
