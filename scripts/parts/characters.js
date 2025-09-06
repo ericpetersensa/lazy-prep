@@ -27,7 +27,8 @@ export function activateCharactersListeners(htmlElement, app) {
     input.addEventListener("change", ev => {
       const id = ev.currentTarget.name.split("-")[2];
       const c = app.session.characters.find(x => x.id === id);
-      if (c) c.spotlightDebt = Math.max(0, parseInt(ev.currentTarget.value, 10) || 0);
+      const n = Number.parseInt(ev.currentTarget.value, 10);
+      if (c) c.spotlightDebt = Number.isFinite(n) ? Math.max(0, n) : 0;
     });
   });
 
