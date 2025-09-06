@@ -8,22 +8,16 @@
     "verified": "13.347"
   },
   "authors": [
-    {
-      "name": "Eric Petersen & Copilot",
-      "url": "https://github.com/ericpetersensa/lazy-prep"
-    }
+    { "name": "Eric Petersen & Copilot" }
   ],
+  "url": "https://github.com/ericpetersensa/lazy-prep",
+  "manifest": "https://raw.githubusercontent.com/ericpetersensa/lazy-prep/main/module.json",
+  "download": "https://github.com/ericpetersensa/lazy-prep/archive/refs/heads/main.zip",
   "esmodules": ["scripts/main.js"],
   "styles": ["styles/module.css"],
   "languages": [
-    {
-      "lang": "en",
-      "name": "English",
-      "path": "lang/en.json"
-    }
+    { "lang": "en", "name": "English", "path": "lang/en.json" }
   ],
   "packs": [],
-  "socket": true,
-  "manifest": "https://raw.githubusercontent.com/ericpetersensa/lazy-prep/main/module.json",
-  "download": "https://github.com/ericpetersensa/lazy-prep/archive/refs/heads/main.zip"
+  "socket": true
 }
