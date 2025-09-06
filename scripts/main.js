@@ -3,7 +3,7 @@ import { LazyDMPrepApp } from "./app.js";
 /* ---------- Hook: init (REGISTER SETTINGS) ---------- */
 Hooks.once("init", async () => {
   console.info("Lazy Prep \n Initializing module (v13 AppV2)");
-  // Register the session store used by the app
+  // Persistent store for the session
   game.settings.register("lazy-prep", "currentSession", {
     scope: "world",
     config: false,
@@ -64,13 +64,6 @@ function ensureTool(group, tool) {
 /* ---------- Hook: getSceneControlButtons (no safety net; onChange only) ---------- */
 Hooks.on("getSceneControlButtons", (controls) => {
   try {
-    const isArrayShape = Array.isArray(controls);
-    console.info(
-      "Lazy Prep \n getSceneControlButtons fired. Shape:",
-      isArrayShape ? "array" : "record"
-    );
-
-    // Dedicated "Lazy Prep" group only
     const lazyGroup = ensureGroup(controls, {
       name: "lazy-prep",
       title: game.i18n?.localize("LAZY_PREP.APP_TITLE") ?? "Lazy DM Prep",
@@ -78,7 +71,6 @@ Hooks.on("getSceneControlButtons", (controls) => {
       visible: true
     });
 
-    // Modern tool: onChange (not deprecated onClick)
     ensureTool(lazyGroup, {
       name: "open-dashboard",
       title: game.i18n?.has("LAZY_PREP.OPEN")
@@ -90,7 +82,6 @@ Hooks.on("getSceneControlButtons", (controls) => {
         if (active) game.lazyPrep?.open?.();
       }
     });
-
   } catch (e) {
     console.error("Lazy Prep \n Error in getSceneControlButtons:", e);
   }
@@ -98,7 +89,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
 
 /* ---------- Hook: ready ---------- */
 Hooks.once("ready", () => {
-  // Public API
+  // Public API for macros/other modules
   game.lazyPrep = {
     app: null,
     open: () => {
@@ -107,7 +98,7 @@ Hooks.once("ready", () => {
     }
   };
 
-  // Ensure buttons appear on load
+  // Ensure the new controls appear after canvas loads
   Hooks.once("canvasReady", () => {
     console.info("Lazy Prep \n canvasReady → ui.controls.render(true)");
     ui.controls?.render(true);
