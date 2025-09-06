@@ -130,16 +130,15 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
     const saveBtn = htmlElement.querySelector(".save-session");
     if (saveBtn) saveBtn.addEventListener("click", () => this.saveSession());
 
-    // Wire up part listeners (jQuery wrapper for convenience)
-    const $html = $(htmlElement);
-    activateCharactersListeners($html, this);
-    activateStrongStartListeners($html, this);
-    activateScenesListeners($html, this);
-    activateSecretsListeners($html, this);
-    activateLocationsListeners($html, this);
-    activateNPCsListeners($html, this);
-    activateThreatsListeners($html, this);
-    activateRewardsListeners($html, this);
+    // Wire up part listeners (native DOM)
+    activateCharactersListeners(htmlElement, this);
+    activateStrongStartListeners(htmlElement, this);
+    activateScenesListeners(htmlElement, this);
+    activateSecretsListeners(htmlElement, this);
+    activateLocationsListeners(htmlElement, this);
+    activateNPCsListeners(htmlElement, this);
+    activateThreatsListeners(htmlElement, this);
+    activateRewardsListeners(htmlElement, this);
 
     console.info("Lazy Prep | activateListeners complete.");
   }
