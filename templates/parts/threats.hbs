@@ -1,11 +1,24 @@
-<div class="tab" data-tab="threats">
-  <h2>{{localize "LAZY_PREP.THREATS"}}</h2>
-  <ul>
-    {{#each session.threats}}
-      <li>
-        <input type="text" name="threat-name-{{id}}" value="{{name}}" placeholder="Threat Name"/>
-      </li>
-    {{/each}}
-  </ul>
-  <button class="add-threat">{{localize "LAZY_PREP.ADD"}} Threat</button>
-</div>
+<h2>{{localize "LAZY_PREP.THREATS"}}</h2>
+
+<ul class="lazy-threats">
+  {{#each session.threats}}
+    <li class="threat-row" data-id="{{id}}">
+      <label>
+        {{localize "LAZY_PREP.NAME"}}
+        <input type="text" name="threat-name-{{id}}" value="{{name}}" placeholder="{{localize 'LAZY_PREP.NAME'}}"/>
+      </label>
+
+      <label>
+        {{localize "LAZY_PREP.DANGER"}}
+        <input type="text" name="threat-danger-{{id}}" value="{{danger}}" placeholder="{{localize 'LAZY_PREP.DANGER'}}"/>
+      </label>
+
+      <label class="notes">
+        {{localize "LAZY_PREP.NOTES"}}
+        <input type="text" name="threat-notes-{{id}}" value="{{notes}}" placeholder="{{localize 'LAZY_PREP.NOTES'}}"/>
+      </label>
+    </li>
+  {{/each}}
+</ul>
+
+<button class="add-threat">{{localize "LAZY_PREP.ADD"}} {{localize "LAZY_PREP.THREAT"}}</button>
