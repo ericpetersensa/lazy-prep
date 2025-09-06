@@ -1,25 +1,38 @@
-/* NPCs tab logic (v13-ready) */
-export function activateNPCsListeners(html, app) {
-  // Add NPC
-  html.on("click", ".add-npc", () => {
-    app.session.npcs.push({
-      id: foundry.utils.randomID(),
-      name: "",
-      motive: ""
+/* NPCs tab logic (v13-ready, native DOM) */
+export function activateNPCsListeners(htmlElement, app) {
+  htmlElement.querySelectorAll(".add-npc").forEach(btn => {
+    btn.addEventListener("click", () => {
+      app.session.npcs.push({
+        id: foundry.utils.randomID(),
+        name: "",
+        role: "",
+        notes: ""
+      });
+      app.render();
     });
-    app.render();
   });
 
-  // Edit fields
-  html.on("change", "input[name^='npc-name-']", (ev) => {
-    const id = ev.currentTarget.name.split("-")[2];
-    const n = app.session.npcs.find(x => x.id === id);
-    if (n) n.name = ev.currentTarget.value ?? "";
+  htmlElement.querySelectorAll("input[name^='npc-name-']").forEach(input => {
+    input.addEventListener("change", ev => {
+      const id = ev.currentTarget.name.split("-")[2];
+      const n = app.session.npcs.find(x => x.id === id);
+      if (n) n.name = ev.currentTarget.value ?? "";
+    });
   });
 
-  html.on("change", "input[name^='npc-motive-']", (ev) => {
-    const id = ev.currentTarget.name.split("-")[2];
-    const n = app.session.npcs.find(x => x.id === id);
-    if (n) n.motive = ev.currentTarget.value ?? "";
+  htmlElement.querySelectorAll("input[name^='npc-role-']").forEach(input => {
+    input.addEventListener("change", ev => {
+      const id = ev.currentTarget.name.split("-")[2];
+      const n = app.session.npcs.find(x => x.id === id);
+      if (n) n.role = ev.currentTarget.value ?? "";
+    });
+  });
+
+  htmlElement.querySelectorAll("input[name^='npc-notes-']").forEach(input => {
+    input.addEventListener("change", ev => {
+      const id = ev.currentTarget.name.split("-")[2];
+      const n = app.session.npcs.find(x => x.id === id);
+      if (n) n.notes = ev.currentTarget.value ?? "";
+    });
   });
 }
