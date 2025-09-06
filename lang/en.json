@@ -1,23 +1,32 @@
 {
   "LAZY_PREP": {
-    "APP_TITLE": "Lazy DM Prep Dashboard",
+    "APP_TITLE": "Lazy DM Prep",
+    "OPEN": "Open Lazy DM Prep",
     "SAVE": "Save Session",
+    "PLACEHOLDER": "This section is coming soon.",
+
     "CHARACTERS": "Characters",
     "STRONG_START": "Strong Start",
     "SCENES": "Scenes",
-    "SECRETS": "Secrets & Clues",
+    "SECRETS": "Secrets",
     "LOCATIONS": "Locations",
     "NPCS": "NPCs",
     "THREATS": "Threats",
     "REWARDS": "Rewards",
-    "ADD": "Add",
+
     "NAME": "Name",
-    "GOAL": "Goal",
-    "TWIST": "Twist",
     "TEXT": "Text",
-    "REVEALED": "Revealed",
-    "CREATE_SCENE": "Create Scene",
-    "CREATE_NPC": "Create NPC",
-    "CREATE_ITEM": "Create Reward"
+    "SCENE_ID": "Scene Id",
+    "ROLE": "Role",
+    "NOTES": "Notes",
+
+    "ADD": "Add",
+    "CHARACTER": "Character",
+    "SCENE": "Scene",
+    "SECRET": "Secret",
+    "LOCATION": "Location",
+    "NPC": "NPC",
+    "THREAT": "Threat",
+    "REWARD": "Reward"
   }
 }
