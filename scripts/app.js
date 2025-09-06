@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 // Foundry VTT v13 - ApplicationV2 + Handlebars mixin
 // MVP app that renders eight Lazy DM steps, with partials or fallback injection, and wires all listeners.
-
 import { activateCharactersListeners } from "./parts/characters.js";
 import { activateStrongStartListeners } from "./parts/strongStart.js";
 import { activateScenesListeners } from "./parts/scenes.js";
@@ -15,13 +14,11 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 const HBS = foundry.applications.handlebars;
 
 export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
-
   static DEFAULT_OPTIONS = {
     id: "lazy-dm-prep",
-    title: game.i18n?.localize("LAZY_PREP.APP_TITLE") ?? "Lazy DM Prep Dashboard",
     template: "modules/lazy-prep/templates/app.hbs",
     position: { width: 900, height: 640 }, // v13 AppV2 sizing
-    resizable: true,
+    window: { title: "LAZY_PREP.APP_TITLE", resizable: true },
     classes: ["lazy-dm-prep", "sheet"],
     parts: {
       characters: { template: "modules/lazy-prep/templates/parts/characters.hbs" },
@@ -40,7 +37,8 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._session = null;
   }
 
-  async getData(options) {
+  /* AppV2 nicety: use _prepareContext (preferred over getData) */
+  async _prepareContext(_options) {
     const session = await this.loadSession();
     return { session, i18n: game.i18n };
   }
@@ -80,7 +78,7 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // If app.hbs partials didn't render, inject parts dynamically as a fallback.
     let tabs = html.querySelectorAll(".tab[data-tab]");
-    console.info(`Lazy Prep | _renderInner: found ${tabs.length} tab(s) before fallback.`);
+    console.info(`Lazy Prep \n _renderInner: found ${tabs.length} tab(s) before fallback.`);
     if (!tabs || tabs.length === 0) {
       const content = html.querySelector("section.content");
       if (content) {
@@ -88,7 +86,6 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
           const partHTML = await HBS.renderTemplate(partCfg.template, { session: this._session, i18n: game.i18n });
           const wrapper = document.createElement("div");
           wrapper.innerHTML = partHTML.trim();
-
           const tab = wrapper.querySelector(".tab[data-tab]");
           if (tab) content.appendChild(tab);
           else {
@@ -101,9 +98,8 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
         }
       }
       tabs = html.querySelectorAll(".tab[data-tab]");
-      console.info(`Lazy Prep | Fallback injected ${tabs.length} tab(s).`);
+      console.info(`Lazy Prep \n Fallback injected ${tabs.length} tab(s).`);
     }
-
     return html;
   }
 
@@ -113,11 +109,10 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
     // Tabs
     const nav = htmlElement.querySelector("nav.tabs[data-group='primary']");
     const tabs = Array.from(htmlElement.querySelectorAll(".tab[data-tab]"));
-    console.info(`Lazy Prep | activateListeners: tabs present = ${tabs.length}.`);
+    console.info(`Lazy Prep \n activateListeners: tabs present = ${tabs.length}.`);
     if (nav && tabs.length) {
       const initial = nav.querySelector("a.item[data-tab]")?.dataset?.tab ?? tabs[0].dataset.tab;
       this._showTab(htmlElement, initial);
-
       nav.querySelectorAll("a.item[data-tab]").forEach(a => {
         a.addEventListener("click", ev => {
           ev.preventDefault();
@@ -140,7 +135,7 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
     activateThreatsListeners(htmlElement, this);
     activateRewardsListeners(htmlElement, this);
 
-    console.info("Lazy Prep | activateListeners complete.");
+    console.info("Lazy Prep \n activateListeners complete.");
   }
 
   _showTab(rootEl, tabName) {
