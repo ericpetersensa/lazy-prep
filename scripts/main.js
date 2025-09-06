@@ -14,7 +14,7 @@ async function registerPartials() {
     const compiled = await HBS.getTemplate(path); // v13 namespaced API
     Handlebars.registerPartial(p, compiled);
     console.info(`Lazy Prep \n Registered partial: ${p}`);
-    }
+  }
 }
 
 /* ---------- Helpers that support v13 array OR record shapes ---------- */
@@ -101,7 +101,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
     const keys = Array.isArray(controls) ? groupsList(controls).map(g => g?.name) : Object.keys(controls);
     console.info("Lazy Prep \n getSceneControlButtons fired. Shape:", Array.isArray(controls) ? "array" : "record", "keys:", keys);
 
-    // 1) Dedicated group (dragon header)
+    // Only add to the dedicated Lazy Prep group (no safety net)
     const lazyGroup = ensureGroup(controls, {
       name: "lazy-prep",
       title: game.i18n?.localize("LAZY_PREP.APP_TITLE") ?? "Lazy DM Prep",
@@ -109,7 +109,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
       visible: true
     });
 
-    // ✅ Modern tool: use onChange (not deprecated onClick)
+    // Modern tool: use onChange (not deprecated onClick)
     ensureTool(lazyGroup, {
       name: "open-dashboard",
       title: game.i18n?.has("LAZY_PREP.OPEN") ? game.i18n.localize("LAZY_PREP.OPEN") : "Open Lazy DM Prep",
@@ -120,25 +120,6 @@ Hooks.on("getSceneControlButtons", (controls) => {
       }
     });
 
-    // 2) Safety net: also place a tool in a common group people see a lot
-    let target = findGroup(controls, "token")
-      ?? findGroup(controls, "measure")
-      ?? findGroup(controls, "notes")
-      ?? groupsList(controls)[0]; // fall back to first group
-
-    if (target) {
-      ensureTool(target, {
-        name: "lazy-prep-open",
-        title: game.i18n?.localize("LAZY_PREP.APP_TITLE") ?? "Lazy DM Prep",
-        icon: "fas fa-dragon",
-        toggle: true,
-        onChange: (event, active) => {
-          if (active) game.lazyPrep?.open?.();
-        }
-      });
-    } else {
-      console.warn("Lazy Prep \n No suitable control group found for safety‑net tool.");
-    }
   } catch (e) {
     console.error("Lazy Prep \n Error in getSceneControlButtons:", e);
   }
