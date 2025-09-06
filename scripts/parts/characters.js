@@ -1,32 +1,42 @@
-/* Characters tab logic (v13-ready) */
-export function activateCharactersListeners(html, app) {
+/* Characters tab logic (v13-ready, native DOM) */
+export function activateCharactersListeners(htmlElement, app) {
   // Add character
-  html.on("click", ".add-character", () => {
-    app.session.characters.push({
-      id: foundry.utils.randomID(),
-      name: "",
-      spotlightDebt: 0,
-      notes: ""
+  htmlElement.querySelectorAll(".add-character").forEach(btn => {
+    btn.addEventListener("click", () => {
+      app.session.characters.push({
+        id: foundry.utils.randomID(),
+        name: "",
+        spotlightDebt: 0,
+        notes: ""
+      });
+      app.render();
     });
-    app.render();
   });
 
-  // Edit fields
-  html.on("change", "input[name^='char-name-']", (ev) => {
-    const id = ev.currentTarget.name.split("-")[2];
-    const c = app.session.characters.find(x => x.id === id);
-    if (c) c.name = ev.currentTarget.value ?? "";
+  // Edit fields: name
+  htmlElement.querySelectorAll("input[name^='char-name-']").forEach(input => {
+    input.addEventListener("change", ev => {
+      const id = ev.currentTarget.name.split("-")[2];
+      const c = app.session.characters.find(x => x.id === id);
+      if (c) c.name = ev.currentTarget.value ?? "";
+    });
   });
 
-  html.on("change", "input[name^='char-spotlight-']", (ev) => {
-    const id = ev.currentTarget.name.split("-")[2];
-    const c = app.session.characters.find(x => x.id === id);
-    if (c) c.spotlightDebt = Math.max(0, parseInt(ev.currentTarget.value, 10) || 0);
+  // Edit fields: spotlight
+  htmlElement.querySelectorAll("input[name^='char-spotlight-']").forEach(input => {
+    input.addEventListener("change", ev => {
+      const id = ev.currentTarget.name.split("-")[2];
+      const c = app.session.characters.find(x => x.id === id);
+      if (c) c.spotlightDebt = Math.max(0, parseInt(ev.currentTarget.value, 10) || 0);
+    });
   });
 
-  html.on("change", "input[name^='char-notes-']", (ev) => {
-    const id = ev.currentTarget.name.split("-")[2];
-    const c = app.session.characters.find(x => x.id === id);
-    if (c) c.notes = ev.currentTarget.value ?? "";
+  // Edit fields: notes
+  htmlElement.querySelectorAll("input[name^='char-notes-']").forEach(input => {
+    input.addEventListener("change", ev => {
+      const id = ev.currentTarget.name.split("-")[2];
+      const c = app.session.characters.find(x => x.id === id);
+      if (c) c.notes = ev.currentTarget.value ?? "";
+    });
   });
 }
