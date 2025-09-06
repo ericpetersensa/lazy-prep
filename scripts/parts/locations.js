@@ -10,7 +10,6 @@ export function activateLocationsListeners(htmlElement, app) {
       app.render();
     });
   });
-
   htmlElement.querySelectorAll("input[name^='loc-name-']").forEach(input => {
     input.addEventListener("change", ev => {
       const id = ev.currentTarget.name.split("-")[2];
@@ -18,7 +17,6 @@ export function activateLocationsListeners(htmlElement, app) {
       if (l) l.name = ev.currentTarget.value ?? "";
     });
   });
-
   htmlElement.querySelectorAll("input[name^='loc-notes-']").forEach(input => {
     input.addEventListener("change", ev => {
       const id = ev.currentTarget.name.split("-")[2];
