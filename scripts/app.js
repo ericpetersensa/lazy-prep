@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
-// Foundry VTT v13 - ApplicationV2 + Handlebars mixin
-// MVP app that renders eight Lazy DM steps, with partials or fallback injection, and wires all listeners.
+// Foundry VTT v13 - ApplicationV2 + Handlebars mixin (pure parts; no fallback injection)
 import { activateCharactersListeners } from "./parts/characters.js";
 import { activateStrongStartListeners } from "./parts/strongStart.js";
 import { activateScenesListeners } from "./parts/scenes.js";
@@ -11,24 +10,24 @@ import { activateThreatsListeners } from "./parts/threats.js";
 import { activateRewardsListeners } from "./parts/rewards.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-const HBS = foundry.applications.handlebars;
 
 export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: "lazy-dm-prep",
     template: "modules/lazy-prep/templates/app.hbs",
-    position: { width: 900, height: 640 }, // v13 AppV2 sizing
+    position: { width: 900, height: 640 },
     window: { title: "LAZY_PREP.APP_TITLE", resizable: true },
     classes: ["lazy-dm-prep", "sheet"],
+    // Each part renders into a <... data-part="..."> slot in app.hbs
     parts: {
-      characters: { template: "modules/lazy-prep/templates/parts/characters.hbs" },
+      characters:  { template: "modules/lazy-prep/templates/parts/characters.hbs" },
       strongStart: { template: "modules/lazy-prep/templates/parts/strongStart.hbs" },
-      scenes: { template: "modules/lazy-prep/templates/parts/scenes.hbs" },
-      secrets: { template: "modules/lazy-prep/templates/parts/secrets.hbs" },
-      locations: { template: "modules/lazy-prep/templates/parts/locations.hbs" },
-      npcs: { template: "modules/lazy-prep/templates/parts/npcs.hbs" },
-      threats: { template: "modules/lazy-prep/templates/parts/threats.hbs" },
-      rewards: { template: "modules/lazy-prep/templates/parts/rewards.hbs" }
+      scenes:      { template: "modules/lazy-prep/templates/parts/scenes.hbs" },
+      secrets:     { template: "modules/lazy-prep/templates/parts/secrets.hbs" },
+      locations:   { template: "modules/lazy-prep/templates/parts/locations.hbs" },
+      npcs:        { template: "modules/lazy-prep/templates/parts/npcs.hbs" },
+      threats:     { template: "modules/lazy-prep/templates/parts/threats.hbs" },
+      rewards:     { template: "modules/lazy-prep/templates/parts/rewards.hbs" }
     }
   };
 
@@ -37,7 +36,7 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._session = null;
   }
 
-  /* AppV2 nicety: use _prepareContext (preferred over getData) */
+  /** AppV2: build the handlebars context here. */
   async _prepareContext(_options) {
     const session = await this.loadSession();
     return { session, i18n: game.i18n };
@@ -72,56 +71,13 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
     ui.notifications?.info(game.i18n?.localize("LAZY_PREP.SAVE") ?? "Session saved.");
   }
 
-  /** Render and ensure content exists even if partials weren't registered */
-  async _renderInner(data) {
-    const html = await super._renderInner(data);
-
-    // Build a content section if the main template failed to produce one.
-    let content = html.querySelector("section.content");
-    if (!content) {
-      const section = document.createElement("section");
-      section.classList.add("content");
-      html.appendChild(section);
-      content = section;
-      console.warn("Lazy Prep \n app.hbs produced no <section class='content'>; created one for fallback injection.");
-    }
-
-    // If app.hbs partials didn't render, inject parts dynamically as a fallback.
-    let tabs = html.querySelectorAll(".tab[data-tab]");
-    console.info(`Lazy Prep \n _renderInner: found ${tabs.length} tab(s) before fallback.`);
-    if (!tabs || tabs.length === 0) {
-      for (const [partId, partCfg] of Object.entries(this.constructor.DEFAULT_OPTIONS.parts)) {
-        try {
-          const partHTML = await HBS.renderTemplate(partCfg.template, { session: this._session, i18n: game.i18n });
-          const wrapper = document.createElement("div");
-          wrapper.innerHTML = partHTML.trim();
-          const tab = wrapper.querySelector(".tab[data-tab]");
-          if (tab) content.appendChild(tab);
-          else {
-            const tabDiv = document.createElement("div");
-            tabDiv.classList.add("tab");
-            tabDiv.dataset.tab = partId;
-            tabDiv.append(...wrapper.childNodes);
-            content.appendChild(tabDiv);
-          }
-        } catch (e) {
-          console.error(`Lazy Prep \n Failed to render part '${partId}' from ${partCfg.template}:`, e);
-        }
-      }
-
-      tabs = html.querySelectorAll(".tab[data-tab]");
-      console.info(`Lazy Prep \n Fallback injected ${tabs.length} tab(s).`);
-    }
-    return html;
-  }
-
+  /** Standard DOM wiring; no rendering/injection fallback needed. */
   activateListeners(htmlElement) {
     super.activateListeners(htmlElement);
 
     // Tabs
     const nav = htmlElement.querySelector("nav.tabs[data-group='primary']");
     const tabs = Array.from(htmlElement.querySelectorAll(".tab[data-tab]"));
-    console.info(`Lazy Prep \n activateListeners: tabs present = ${tabs.length}.`);
     if (nav && tabs.length) {
       const initial = nav.querySelector("a.item[data-tab]")?.dataset?.tab ?? tabs[0].dataset.tab;
       this._showTab(htmlElement, initial);
@@ -137,7 +93,7 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
     const saveBtn = htmlElement.querySelector(".save-session");
     if (saveBtn) saveBtn.addEventListener("click", () => this.saveSession());
 
-    // Wire up part listeners (native DOM)
+    // Part listeners (native DOM)
     activateCharactersListeners(htmlElement, this);
     activateStrongStartListeners(htmlElement, this);
     activateScenesListeners(htmlElement, this);
@@ -146,8 +102,6 @@ export class LazyDMPrepApp extends HandlebarsApplicationMixin(ApplicationV2) {
     activateNPCsListeners(htmlElement, this);
     activateThreatsListeners(htmlElement, this);
     activateRewardsListeners(htmlElement, this);
-
-    console.info("Lazy Prep \n activateListeners complete.");
   }
 
   _showTab(rootEl, tabName) {
