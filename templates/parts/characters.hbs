@@ -1,11 +1,24 @@
 <h2>{{localize "LAZY_PREP.CHARACTERS"}}</h2>
-<ul>
+
+<ul class="lazy-characters">
   {{#each session.characters}}
-    <li>
-      <input type="text"   name="char-name-{{id}}"      value="{{name}}"           placeholder="Character Name"/>
-      <input type="number" name="char-spotlight-{{id}}" value="{{spotlightDebt}}" min="0" style="width:50px;"/>
-      <input type="text"   name="char-notes-{{id}}"     value="{{notes}}"          placeholder="Notes"/>
+    <li class="character-row" data-id="{{id}}">
+      <label>
+        {{localize "LAZY_PREP.NAME"}}
+        <input type="text" name="char-name-{{id}}" value="{{name}}" placeholder="{{localize 'LAZY_PREP.NAME'}}"/>
+      </label>
+
+      <label>
+        {{localize "LAZY_PREP.SPOTLIGHT"}}
+        <input type="number" name="char-spotlight-{{id}}" value="{{spotlightDebt}}" min="0" style="width:60px;"/>
+      </label>
+
+      <label class="notes">
+        {{localize "LAZY_PREP.NOTES"}}
+        <input type="text" name="char-notes-{{id}}" value="{{notes}}" placeholder="{{localize 'LAZY_PREP.NOTES'}}"/>
+      </label>
     </li>
   {{/each}}
 </ul>
-<button class="add-character">{{localize "LAZY_PREP.ADD"}} Character</button>
+
+<button class="add-character">{{localize "LAZY_PREP.ADD"}} {{localize "LAZY_PREP.CHARACTER"}}</button>
