@@ -10,7 +10,6 @@ export function activateScenesListeners(htmlElement, app) {
       app.render();
     });
   });
-
   htmlElement.querySelectorAll("input[name^='scene-name-']").forEach(input => {
     input.addEventListener("change", ev => {
       const id = ev.currentTarget.name.split("-")[2];
@@ -18,7 +17,6 @@ export function activateScenesListeners(htmlElement, app) {
       if (s) s.name = ev.currentTarget.value ?? "";
     });
   });
-
   htmlElement.querySelectorAll("input[name^='scene-notes-']").forEach(input => {
     input.addEventListener("change", ev => {
       const id = ev.currentTarget.name.split("-")[2];
