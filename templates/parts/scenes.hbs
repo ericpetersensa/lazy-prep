@@ -4,10 +4,9 @@
   {{#each session.scenes}}
     <li class="scene-row" data-id="{{id}}">
       <label>
-        {{localize "LAZY_PREP.TITLE"}}
-        <input type="text" name="scene-title-{{id}}" value="{{title}}" placeholder="{{localize 'LAZY_PREP.TITLE'}}"/>
+        {{localize "LAZY_PREP.NAME"}}
+        <input type="text" name="scene-name-{{id}}" value="{{name}}" placeholder="{{localize 'LAZY_PREP.NAME'}}"/>
       </label>
-
       <label class="notes">
         {{localize "LAZY_PREP.NOTES"}}
         <input type="text" name="scene-notes-{{id}}" value="{{notes}}" placeholder="{{localize 'LAZY_PREP.NOTES'}}"/>
