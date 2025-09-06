@@ -1,72 +1,84 @@
 import { LazyDMPrepApp } from "./app.js";
 
-/* ---------- Hook: getSceneControlButtons (v13‑safe) ---------- */
+/* ---------- Hook: init (REGISTER SETTINGS) ---------- */
+Hooks.once("init", async () => {
+  console.info("Lazy Prep \n Initializing module (v13 AppV2)");
+  // Register the session store used by the app
+  game.settings.register("lazy-prep", "currentSession", {
+    scope: "world",
+    config: false,
+    type: Object,
+    default: {}
+  });
+});
+
+/* ---------- Utilities to support array OR record controls shape ---------- */
+function ensureGroup(controls, def) {
+  const isArrayShape = Array.isArray(controls);
+
+  if (isArrayShape) {
+    let g = controls.find(c => c?.name === def.name);
+    if (!g) {
+      g = { activeTool: "", order: 999, visible: true, tools: [], ...def };
+      controls.push(g);
+      console.info(`Lazy Prep \n Created group '${def.name}' (array mode).`);
+    }
+    if (!g.tools) g.tools = [];
+    return g;
+  } else {
+    if (!controls[def.name]) {
+      controls[def.name] = {
+        activeTool: "",
+        order: 999,
+        visible: true,
+        tools: {},
+        ...def
+      };
+      console.info(`Lazy Prep \n Created group '${def.name}' (record mode).`);
+    }
+    const g = controls[def.name];
+    if (Array.isArray(g.tools)) {
+      const arr = g.tools; g.tools = {};
+      for (const t of arr) g.tools[t.name] = t;
+    } else if (!g.tools) {
+      g.tools = {};
+    }
+    return g;
+  }
+}
+
+function ensureTool(group, tool) {
+  if (Array.isArray(group.tools)) {
+    if (!group.tools.some(t => t.name === tool.name)) {
+      group.tools.push(tool);
+      console.info(`Lazy Prep \n Added tool '${tool.name}' to group '${group.name}'.`);
+    }
+  } else {
+    if (!group.tools[tool.name]) {
+      group.tools[tool.name] = tool;
+      console.info(`Lazy Prep \n Added tool '${tool.name}' to group '${group.name}'.`);
+    }
+  }
+}
+
+/* ---------- Hook: getSceneControlButtons (no safety net; onChange only) ---------- */
 Hooks.on("getSceneControlButtons", (controls) => {
   try {
     const isArrayShape = Array.isArray(controls);
-
-    // Helper: ensure we get/create a dedicated group called "lazy-prep"
-    function ensureGroup(def) {
-      if (isArrayShape) {
-        let g = controls.find(c => c?.name === def.name);
-        if (!g) {
-          g = { activeTool: "", order: 999, visible: true, tools: [], ...def };
-          controls.push(g);
-          console.info(`Lazy Prep \n Created group '${def.name}' (array mode).`);
-        }
-        if (!g.tools) g.tools = [];
-        return g;
-      } else {
-        if (!controls[def.name]) {
-          controls[def.name] = {
-            activeTool: "",
-            order: 999,
-            visible: true,
-            tools: {},
-            ...def
-          };
-          console.info(`Lazy Prep \n Created group '${def.name}' (record mode).`);
-        }
-        const g = controls[def.name];
-        if (Array.isArray(g.tools)) {
-          const arr = g.tools; g.tools = {};
-          for (const t of arr) g.tools[t.name] = t;
-        } else if (!g.tools) {
-          g.tools = {};
-        }
-        return g;
-      }
-    }
-
-    // Helper: add a tool to the group regardless of shape
-    function ensureTool(group, tool) {
-      if (Array.isArray(group.tools)) {
-        if (!group.tools.some(t => t.name === tool.name)) {
-          group.tools.push(tool);
-          console.info(`Lazy Prep \n Added tool '${tool.name}' to group '${group.name}'.`);
-        }
-      } else {
-        if (!group.tools[tool.name]) {
-          group.tools[tool.name] = tool;
-          console.info(`Lazy Prep \n Added tool '${tool.name}' to group '${group.name}'.`);
-        }
-      }
-    }
-
     console.info(
       "Lazy Prep \n getSceneControlButtons fired. Shape:",
       isArrayShape ? "array" : "record"
     );
 
-    // Only add to the dedicated Lazy Prep group (no safety net)
-    const lazyGroup = ensureGroup({
+    // Dedicated "Lazy Prep" group only
+    const lazyGroup = ensureGroup(controls, {
       name: "lazy-prep",
       title: game.i18n?.localize("LAZY_PREP.APP_TITLE") ?? "Lazy DM Prep",
       icon: "fas fa-dragon",
       visible: true
     });
 
-    // Modern tool: use onChange (not deprecated onClick)
+    // Modern tool: onChange (not deprecated onClick)
     ensureTool(lazyGroup, {
       name: "open-dashboard",
       title: game.i18n?.has("LAZY_PREP.OPEN")
