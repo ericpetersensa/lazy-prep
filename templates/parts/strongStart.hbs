@@ -1,13 +1,13 @@
 <h2>{{localize "LAZY_PREP.STRONG_START"}}</h2>
 
 <div class="strong-start">
-  <label class="block">
-    {{localize "LAZY_PREP.DESCRIPTION"}}
-    <textarea class="strong-start-text" name="strong-start-text" rows="4" placeholder="{{localize 'LAZY_PREP.DESCRIPTION'}}">{{session.strongStart.text}}</textarea>
+  <label>
+    {{localize "LAZY_PREP.TEXT"}}
+    <input type="text" name="strongStart-text" value="{{session.strongStart.text}}" placeholder="{{localize 'LAZY_PREP.STRONG_START'}}"/>
   </label>
 
-  <label class="block">
+  <label>
     {{localize "LAZY_PREP.SCENE_ID"}}
-    <input class="strong-start-scene" type="text" name="strong-start-scene" value="{{session.strongStart.sceneId}}" placeholder="{{localize 'LAZY_PREP.SCENE_ID'}}"/>
+    <input type="text" name="strongStart-sceneId" value="{{session.strongStart.sceneId}}"/>
   </label>
 </div>
