@@ -1,9 +1,8 @@
 import { LazyDMPrepApp } from "./app.js";
 
-/* ---------- Hook: init (REGISTER SETTINGS) ---------- */
+/* ---------- Hook: init (register settings) ---------- */
 Hooks.once("init", async () => {
-  console.info("Lazy Prep \n Initializing module (v13 AppV2)");
-  // Persistent store for the session
+  console.info("Lazy Prep\n Initializing module (v13 AppV2)");
   game.settings.register("lazy-prep", "currentSession", {
     scope: "world",
     config: false,
@@ -15,7 +14,6 @@ Hooks.once("init", async () => {
 /* ---------- Utilities to support array OR record controls shape ---------- */
 function ensureGroup(controls, def) {
   const isArrayShape = Array.isArray(controls);
-
   if (isArrayShape) {
     let g = controls.find(c => c?.name === def.name);
     if (!g) {
@@ -46,7 +44,6 @@ function ensureGroup(controls, def) {
     return g;
   }
 }
-
 function ensureTool(group, tool) {
   if (Array.isArray(group.tools)) {
     if (!group.tools.some(t => t.name === tool.name)) {
@@ -61,7 +58,7 @@ function ensureTool(group, tool) {
   }
 }
 
-/* ---------- Hook: getSceneControlButtons (no safety net; onChange only) ---------- */
+/* ---------- Hook: getSceneControlButtons ---------- */
 Hooks.on("getSceneControlButtons", (controls) => {
   try {
     const lazyGroup = ensureGroup(controls, {
@@ -70,7 +67,6 @@ Hooks.on("getSceneControlButtons", (controls) => {
       icon: "fas fa-dragon",
       visible: true
     });
-
     ensureTool(lazyGroup, {
       name: "open-dashboard",
       title: game.i18n?.has("LAZY_PREP.OPEN")
@@ -78,7 +74,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
         : "Open Lazy DM Prep",
       icon: "fas fa-book-open",
       toggle: true,
-      onChange: (event, active) => {
+      onChange: (_event, active) => {
         if (active) game.lazyPrep?.open?.();
       }
     });
@@ -89,7 +85,6 @@ Hooks.on("getSceneControlButtons", (controls) => {
 
 /* ---------- Hook: ready ---------- */
 Hooks.once("ready", () => {
-  // Public API for macros/other modules
   game.lazyPrep = {
     app: null,
     open: () => {
@@ -97,8 +92,6 @@ Hooks.once("ready", () => {
       game.lazyPrep.app.render(true);
     }
   };
-
-  // Ensure the new controls appear after canvas loads
   Hooks.once("canvasReady", () => {
     console.info("Lazy Prep \n canvasReady → ui.controls.render(true)");
     ui.controls?.render(true);
